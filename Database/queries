@@ -1,1 +1,190 @@
 -- All Query here 
+  CREATE DATABASE web_coursework;
+USE   DATABASE web_coursework;
+
+-- TABLE CREATION
+CREATE TABLE SessionConsole (
+SessionConsoleID INT,
+SessionID INT,
+PRIMARY KEY (SessionConsoleID),
+foreign key (SessionID) REFERENCES session(Session_ID)
+);
+
+CREATE TABLE SessionBooking (
+BookingID INT,
+SessionID INT,
+CustomerName VARCHAR(100),
+BookingDate DATE,
+Member CHAR(1),
+Fee DECIMAL(10, 2),
+Prepaid CHAR(1),
+FOREIGN KEY (BookingID) REFERENCES bookingdata(BookingID),
+FOREIGN key (SessionID) REFERENCES session(Session_ID)
+);
+
+CREATE TABLE BookingData (
+BookingID INT PRIMARY KEY,
+CustomerID INT,
+BookingDate DATE
+);
+
+CREATE TABLE ConsoleDetails (
+SessionConsoleID INT PRIMARY KEY,
+ConsoleName VARCHAR(50),
+ConsoleQuantity INT
+);
+
+CREATE TABLE ArcadeMachines (
+MachineID INT PRIMARY KEY,
+Game VARCHAR(50),
+Year INT,
+Floor INT
+);
+
+CREATE TABLE ConsoleGames (
+ConsoleGameID INT PRIMARY KEY,
+GameName VARCHAR(100),
+PEGI VARCHAR(10),
+Console VARCHAR(50),
+ConsoleQuantity INT
+);
+
+CREATE TABLE CustomerData (
+CustomerID INT PRIMARY KEY,
+Name VARCHAR(100),
+Address VARCHAR(255),
+MembershipType VARCHAR(50),
+JoinDate DATE,
+DateOfBirth DATE
+);
+
+CREATE TABLE MembershipType (
+MembershipType VARCHAR(50) PRIMARY KEY,
+MembershipFee DECIMAL(10, 2)
+);
+
+CREATE TABLE Session (
+Session_ID INT PRIMARY KEY,
+Session_Day VARCHAR(10),
+Start_Time TIME,
+End_Time TIME,
+Session_Type VARCHAR(10)
+);
+
+CREATE TABLE Session_Type_Price (
+Session_Type VARCHAR(10) PRIMARY KEY,
+Floor_Price INT
+);
+
+CREATE TABLE Staff (
+StaffID INT PRIMARY KEY,
+StaffName VARCHAR(50),
+Role VARCHAR(50),
+SessionID INT
+);
+
+-- data insertion query 
+
+INSERT INTO `SessionConsole` (`SessionConsoleID`, `SessionID`) VALUES
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 4);
+
+INSERT INTO `ArcadeMachines` (`MachineID`, `Game`, `Year`, `Floor`) VALUES
+(23, 'COC', 2010, 1),
+(45, 'Spiderman', 2016, 2),
+(1234, 'PUBG', 2004, 2);
+
+INSERT INTO `BookingData` (`BookingID`, `CustomerID`, `BookingDate`) VALUES
+(1, 1, '2024-07-22'),
+(2, 2, '2024-07-22'),
+(3, 3, '2024-07-22'),
+(4, 4, '2024-08-25'),
+(5, 5, '2024-07-22'),
+(6, 6, '2024-07-05');
+
+INSERT INTO `ConsoleDetails` (`SessionConsoleID`, `ConsoleName`, `ConsoleQuantity`) VALUES
+(2, 'Xbox 360', 3),
+(3, 'PS3', 2),
+(4, 'PS4', 1),
+(5, 'Nintendo Wii', 2),
+(6, 'PS5', 4);
+
+INSERT INTO `ConsoleGames` (`ConsoleGameID`, `GameName`, `PEGI`, `Console`, `ConsoleQuantity`) VALUES
+(1, 'Elden Ring: Shadow of Tree', 'PG', 'Xbox 360', 3),
+(2, 'Final Fantasy VII Rebirth', 'PG', 'PS3', 2),
+(3, 'Destiny 2: The Final Shape', 'PG', 'PS2', 3),
+(4, 'Tekken 8', 'PG', 'PS3', 2),
+(5, 'Persona 3 Reload', 'PG', 'Nintendo 64', 2),
+(6, 'Cavern of Dreams', '15', 'Nintendo Switch', 4);
+
+INSERT INTO `CustomerData` (`CustomerID`, `Name`, `Address`, `MembershipType`, `JoinDate`, `DateOfBirth`) VALUES
+(1, 'Saanvi Bhatta', 'Baneshwor, Kathmandu', 'Standard', '2024-01-01', '2015-03-01'),
+(2, 'Bill Gates', 'Maitidevi, Kathmandu', 'Premium', '2024-07-06', '2001-10-12'),
+(3, 'Elon Musk', 'Putalisadak, Kathmandu', 'Premium', '2024-03-28', '2003-07-20'),
+(4, 'Kamala Harris', 'Kapan, Kathmandu', 'Standard', '2024-01-05', '1973-05-01');
+
+INSERT INTO `MembershipType` (`MembershipType`, `MembershipFee`) VALUES
+('Premium', 20000.00),
+('Standard', 1500.00);
+
+INSERT INTO `Session` (`Session_ID`, `Session_Day`, `Start_Time`, `End_Time`, `Session_Type`) VALUES
+(1, 'Sunday', '09:00:00', '21:00:00', 'Free'),
+(2, 'Sunday', '09:00:00', '21:00:00', 'Free'),
+(3, 'Saturday', '09:00:00', '21:00:00', 'Free'),
+(4, 'Friday', '06:00:00', '22:00:00', 'Special');
+
+INSERT INTO `Session_Type_Price` (`Session_Type`, `Floor_Price`) VALUES
+('Free', 1500),
+('Special', 1000);
+
+
+INSERT INTO `Staff` (`StaffID`, `StaffName`, `Role`, `SessionID`) VALUES
+(1, 'SAGAR ARYAL', 'CAFE', 1),
+(2, 'BIKESH KHAGDI', 'MAINTENANCE', 1),
+(3, 'SAROJ SAPKOTA', 'COUNTER', 1),
+(4, 'JONATHAN SHRESTHA', 'COUNTER', 2),
+(5, 'ROHAN CHAUDHARY', 'MAINTENANCE', 2),
+(6, 'RAJEEV KARMACHARYA', 'CAFE', 2);
+
+INSERT INTO SessionBooking VALUES
+(1, 1, 'Saanvi Bhatta', '2024-07-22', 'Y', NULL, NULL),
+(2, 1, 'Bill Gates', '2024-07-22', 'N', 1500, 'N'),
+(3, 1, 'Elon Musk', '2024-07-22', 'Y', 1000, 'Y'),
+(4, 1, 'Jack Ma', '2024-08-25', 'N', 1500, 'N'),
+(5, 2, 'Kamala Harris', '2024-07-22', 'Y', 1000, 'N'),
+(6, 4, 'Rishi Sunak', '2024-07-05', 'Y', 1000, 'Y');
+
+for task 2 queries
+
+iii. Write a query to select all the customers booked on session 1 who have not paid yet.
+
+SELECT CustomerName
+FROM SessionBooking
+WHERE SessionID = 1 AND Prepaid = 'N';
+
+iv. Write a query to select all machines on floor 1 by machine number in descending order.
+SELECT
+FROM ArcadeMachines
+WHERE Floor = 1
+ORDER BY MachineID DESC;
+
+v. Write a query that counts all the console games for the PS3
+
+SELECT COUNT(*) AS PS3Games
+FROM ConsoleGames
+WHERE Console = 'PS3';
+
+vi. Write a query that selects all staff working on session 1 on the maintenance.
+
+SELECT *
+FROM Staff
+WHERE SessionID = 1 AND Role = 'Maintenance';
+
+viii. Delete the machine GTA
+
+DELETE FROM ArcadeMachines
+WHERE Game ='GTA';
